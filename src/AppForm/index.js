@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
+import axios from "axios";
 
 export default function AppForm() {
     const navigation = useNavigation();
@@ -20,6 +21,32 @@ export default function AppForm() {
         navigation.navigate('AppList');
     }
 
+
+    const baseURL = "http://192.168.0.222:8080/";
+    const [post, setPost] = React.useState(null);
+    const [error, setError] = React.useState(null);
+
+    function createPost() {
+        axios.post(`${baseURL}user/`, {
+            nome: nome,
+            apelido: apelido,
+            avatar: null,
+            senha: password,
+            email: email,
+            telefone: telefone
+        })
+            .then((response) => {
+                setPost(response.data);
+                if (response.status == 200) {
+                    retornarList();
+                }
+            }).catch(error => {
+                setError(error);
+            });
+        if (error) return (console.log(`Error: ${error.message}`));
+    }
+
+
     return (
         <View style={styles.container}>
             <View style={styles.line}>
@@ -30,7 +57,7 @@ export default function AppForm() {
                 </TouchableOpacity>
                 <Image style={styles.img} source={require('../../assets/logo.jpg')} />
                 <TouchableOpacity
-                    onPress={() => retornarList()}
+                    onPress={() => createPost()}
                 >
                     <Text style={styles.buttonTextAdicionar}>Adicionar</Text>
                 </TouchableOpacity>
@@ -46,7 +73,6 @@ export default function AppForm() {
                     textContentType="name"
                     autoCapitalize="none"
                     autoCorrect={false}
-                    secureTextEntry={true}
                     onChangeText={(nome) => setNome(nome)}
                 />
                 <TextInput
@@ -67,7 +93,6 @@ export default function AppForm() {
                     textContentType="telephoneNumber"
                     autoCapitalize="none"
                     autoCorrect={false}
-                    secureTextEntry={true}
                     onChangeText={(telefone) => setTelefone(telefone)}
                 />
                 <TextInput
@@ -77,7 +102,6 @@ export default function AppForm() {
                     textContentType="emailAddress"
                     autoCapitalize="none"
                     autoCorrect={false}
-                    secureTextEntry={true}
                     onChangeText={(email) => setEmail(email)}
                 />
                 <TextInput
@@ -87,7 +111,6 @@ export default function AppForm() {
                     textContentType="nickname"
                     autoCapitalize="none"
                     autoCorrect={false}
-                    secureTextEntry={true}
                     onChangeText={(apelido) => setApelido(apelido)}
                 />
             </ScrollView>
@@ -110,8 +133,8 @@ const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
         width: '100%'
-      },
-      inputContainer: {
+    },
+    inputContainer: {
         flex: 1,
         marginTop: 5,
         width: '100%',
@@ -120,8 +143,8 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
         alignItems: 'stretch',
         backgroundColor: '#A6ADAE'
-      },
-      input: {
+    },
+    input: {
         marginTop: 10,
         height: 60,
         backgroundColor: '#D9D9D9',
@@ -133,24 +156,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         elevation: 20,
         shadowOpacity: 20,
-      },
-      buttonTextCancelar: {
+    },
+    buttonTextCancelar: {
         color: "#14099F",
         fontWeight: 'bold',
         marginTop: 5,
         fontSize: 15
-      },
-      buttonTextAdicionar: {
+    },
+    buttonTextAdicionar: {
         color: "#14099F",
         fontWeight: 'bold',
         marginTop: 5,
         fontSize: 15
-      },
-      line: {
+    },
+    line: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 50,
         alignContent: 'stretch'
-      },
+    },
 });
