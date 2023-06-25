@@ -1,16 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect, useCallback } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import axios from "axios";
+import { Avatar } from "@react-native-material/core";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import * as ImagePicker from 'expo-image-picker';
 
 export default function AppForm() {
     const navigation = useNavigation();
 
     const [nome, setNome] = useState("");
     const [password, setPassword] = useState("");
-    const [apelido, setApelido] = useState("");
     const [email, setEmail] = useState("");
     const [telefone, setTelefone] = useState("");
+    const [image, setImage] = useState(null);
 
 
     const retornarHome = () => {
@@ -22,6 +25,62 @@ export default function AppForm() {
     }
 
 
+    const imageChange = async () => {
+        // Pede permissão pro usuário para acessar as fotos
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert("Você recusou a abrir suas fotos!");
+            return;
+        }
+
+        const response = await ImagePicker.launchImageLibraryAsync({ base64: true, allowsEditing: true, quality: 0.5 });
+
+
+        if (!response.canceled) {
+            setImage(response.assets[0].uri);
+            console.log(response.assets[0].uri);
+        }
+    }
+
+    const cameraChange = async () => {
+        // Pede permissão pro usuário para acessar a câmera
+        const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert("Você recusou a abrir sua câmera!");
+            return;
+        }
+
+        const response = await ImagePicker.launchCameraAsync({ base64: true, allowsEditing: true, quality: 0.5 });
+
+        if (!response.canceled) {
+            setImage(response.assets[0].uri);
+            console.log(response.assets[0].uri);
+        }
+    }
+
+    const photoChange = () => {
+        Alert.alert('Escolha sua foto de perfil!', 'Selecione de onde gostaria de escolher sua foto.', [
+          {
+            text: 'Galeria de Fotos',
+            style: 'default',
+            onPress: () => {imageChange()}
+          },
+          {
+            text: 'Rolo da câmera',
+            style: 'default',
+            onPress: () => {cameraChange()}
+          }
+        ],
+        {
+          cancelable: true,
+          onDismiss: () =>
+            Alert.alert(
+              'Seleção de imagem cancelada.',
+            ),
+        });
+      }
+    
+
     const baseURL = "http://192.168.0.222:8080/";
     const [post, setPost] = React.useState(null);
     const [error, setError] = React.useState(null);
@@ -29,8 +88,7 @@ export default function AppForm() {
     function createPost() {
         axios.post(`${baseURL}user/`, {
             nome: nome,
-            apelido: apelido,
-            avatar: null,
+            avatar: image,
             senha: password,
             email: email,
             telefone: telefone
@@ -55,13 +113,21 @@ export default function AppForm() {
                 >
                     <Text style={styles.buttonTextCancelar}>Cancelar</Text>
                 </TouchableOpacity>
-                <Image style={styles.img} source={require('../../assets/logo.jpg')} />
                 <TouchableOpacity
                     onPress={() => createPost()}
                 >
                     <Text style={styles.buttonTextAdicionar}>Adicionar</Text>
                 </TouchableOpacity>
             </View>
+            <View style={styles.imageAvatar}>
+                <TouchableOpacity onPress={() => photoChange()}>
+                    <Avatar
+                        size={150}
+                        image={{ uri: image }}
+                        icon={props => <Icon name="account" {...props} />}>
+                    </Avatar>
+                </TouchableOpacity>
+                </View>
             <ScrollView
                 automaticallyAdjustKeyboardInsets={true}
                 style={styles.scrollContainer}
@@ -104,15 +170,6 @@ export default function AppForm() {
                     autoCorrect={false}
                     onChangeText={(email) => setEmail(email)}
                 />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Apelido"
-                    keyboardType="default"
-                    textContentType="nickname"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    onChangeText={(apelido) => setApelido(apelido)}
-                />
             </ScrollView>
         </View>
     );
@@ -130,6 +187,11 @@ const styles = StyleSheet.create({
         marginTop: 50,
         marginBottom: 20,
     },
+    imageAvatar: {
+        alignContent: 'center',
+        alignSelf: 'center',
+        marginTop: 5,
+      },
     scrollContainer: {
         flex: 1,
         width: '100%'
@@ -161,19 +223,21 @@ const styles = StyleSheet.create({
         color: "#14099F",
         fontWeight: 'bold',
         marginTop: 5,
-        fontSize: 15
+        fontSize: 15,
+        alignSelf: 'flex-start',
     },
     buttonTextAdicionar: {
         color: "#14099F",
         fontWeight: 'bold',
         marginTop: 5,
-        fontSize: 15
+        fontSize: 15,
+        alignSelf: 'flex-end',
     },
     line: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexWrap: 'wrap',
         marginTop: 50,
-        alignContent: 'stretch'
+        marginBottom: 10,
     },
 });

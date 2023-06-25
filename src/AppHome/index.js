@@ -30,11 +30,14 @@ export default function AppHome() {
 
     function getUserByPhoneAndPasswd() {
         axios.get(`${baseURL}user/${telefone}/${password}`)
-            .then((response) => {
+            .then(async (response) => {
                 setGet(response.data);
-                AsyncStorage.setItem('idUsuario', JSON.stringify(response.data.id)).then(res => { console.log(response.data.id) })
+                await AsyncStorage.setItem('idUsuario', JSON.stringify(response.data.id)).then(res => { console.log(response.data.id) })
                 if (response.status == 200) {
                     getHash(response.data.id)
+                }
+                else{
+                    alert('Error: Hash diferente do que existe no async storage, você terá que logar de novo.')
                 }
             }).catch(error => {
                 setError(error);
@@ -44,9 +47,9 @@ export default function AppHome() {
 
     function getHash(dataResponse) {
         axios.get(`${baseURL}user/${dataResponse}`)
-            .then((response) => {
+            .then(async (response) => {
                 if (response.status == 200) {
-                    AsyncStorage.setItem('hashUsuario', JSON.stringify(response.data)).then(res => { console.log(response.data) })
+                    await AsyncStorage.setItem('hashUsuario', JSON.stringify(response.data)).then(res => { console.log(response.data) })
                     retornarList();
                 }
             }).catch(error => {
@@ -68,22 +71,15 @@ export default function AppHome() {
                         console.log(idUsuario)
                         retornarList();
                     }
-                }).catch(error => {
+                }).catch(errorCompare => {
                     setErrorCompare(errorCompare);
                 });
-            if (error) return (console.log(`Error: ${error.message}`));
+            if (errorCompare) return (console.log(`Error: ${errorCompare.message}`));
         }
         catch (e) {
             alert('Error: Hash diferente do que existe no async storage, você terá que logar de novo.')
         }
     }
-
-    function getHashNow(dataResponse) {
-
-    }
-
-
-
 
     return (
         <View style={styles.container}>
