@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -16,6 +16,7 @@ export default function AppChat({ route }) {
     const [id, setId] = useState('');
     const [msg, setMsg] = useState([]);
     const [post, setPost] = React.useState(null);
+    const scrollRef = useRef(null);
 
     const retornarList = () => {
         navigation.navigate('AppList');
@@ -87,7 +88,10 @@ export default function AppChat({ route }) {
             <ScrollView
                 automaticallyAdjustKeyboardInsets={true}
                 style={styles.scrollContainer}
-                contentContainerStyle={styles.itemsContainer}>
+                persistentScrollbar={true}
+                contentContainerStyle={styles.itemsContainer}
+                ref={scrollRef}
+                onContentSizeChange={() => scrollRef.current.scrollToEnd({ animated: true })}>
                 {items.map(items => {
                     return <AppMessage key={items.id} id={items.id} idFrom={items.from.id} nomeFrom={items.from.nome} message={items.mensagem} time={items.dataHora} />
                 })}
@@ -98,11 +102,10 @@ export default function AppChat({ route }) {
                 <SafeAreaView>
                     <View style={styles.bottomLine}>
                         <ScrollView overScrollMode="auto"
-                        automaticallyAdjustContentInsets={true}
-                        bounces={false}
-                        scrollToOverflowEnabled={true} 
-                        persistentScrollbar={true}
-                        contentContainerStyle={{flexGrow: 1}}>
+                            automaticallyAdjustContentInsets={true}
+                            persistentScrollbar={true}
+                            ref={scrollRef}
+                            onContentSizeChange={() => scrollRef.current.scrollToEnd({ animated: true })}>
                             <TextInput
                                 placeholder="Mensagem"
                                 keyboardType="default"
@@ -139,7 +142,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: 50,
         marginBottom: 5,
-        marginLeft:30,
+        marginLeft: 30,
         alignItems: 'center',
     },
     icon: {
