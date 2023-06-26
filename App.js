@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AppHome from './src/AppHome';
 import AppChat from './src/AppChat';
+import AppNew from './src/AppNew';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,11 @@ export default function App() {
         name="AppChat"
         component={AppChat}
         options={{title: 'Chat'}}>
+        </Stack.Screen>
+        <Stack.Screen
+        name="AppNew"
+        component={AppNew}
+        options={{title: 'New Message'}}>
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

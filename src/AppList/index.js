@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
-import { TouchableOpacity, ScrollView, StyleSheet, Text, View } from "react-native";
+import { TouchableOpacity, ScrollView, StyleSheet, Text, View, TextInput } from "react-native";
 
 import AppItem from '../AppItem';
 
@@ -15,6 +15,10 @@ export default function AppList() {
     const retornarList = () => {
         AsyncStorage.clear();
         navigation.navigate('AppHome');
+    }
+
+    const novaMensagem = () => {
+        navigation.navigate('AppNew');
     }
 
     const getItems = async () => {
@@ -40,12 +44,12 @@ export default function AppList() {
                 <TouchableOpacity onPress={() => retornarList()}>
                     <Text style={styles.buttonExit}>Sair</Text>
                 </TouchableOpacity>
-                <Text style={styles.title}>Contatos</Text>
-                <TouchableOpacity onPress={() => retornarList()}>
-                    <Text style={styles.buttonAdd}>Adicionar</Text>
+                <Text style={styles.title}>Conversas</Text>
+                <TouchableOpacity onPress={() => novaMensagem()}>
+                <Text style={styles.buttonAdd}>Adicionar</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.line}>               
+            <View>               
             </View>
             <ScrollView
                 automaticallyAdjustKeyboardInsets={true}
@@ -76,7 +80,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: 50,
         marginBottom: 5,
-        marginLeft: 25
+        marginLeft: 25,
+        marginRight: 25
     },
     buttonAdd: {
         color: "#14099F",

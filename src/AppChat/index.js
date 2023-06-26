@@ -21,7 +21,7 @@ export default function AppChat({ route }) {
     const retornarList = () => {
         navigation.navigate('AppList');
     }
-
+    
 
     function createPost() {
         axios.post(`${baseURL}message/enviarMensagem`, {
@@ -91,7 +91,8 @@ export default function AppChat({ route }) {
                 persistentScrollbar={true}
                 contentContainerStyle={styles.itemsContainer}
                 ref={scrollRef}
-                onContentSizeChange={() => scrollRef.current.scrollToEnd({ animated: true })}>
+                onContentSizeChange={() => scrollRef.current.scrollToEnd({ animated: true })}
+                contentInset={{bottom:80}}>
                 {items.map(items => {
                     return <AppMessage key={items.id} id={items.id} idFrom={items.from.id} nomeFrom={items.from.nome} message={items.mensagem} time={items.dataHora} />
                 })}
@@ -167,6 +168,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 50,
         padding: 20,
+        paddingBottom: 60,
         justifyContent: 'flex-start',
         alignContent: 'center',
         backgroundColor: '#A6ADAE'

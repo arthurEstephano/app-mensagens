@@ -32,6 +32,7 @@ export default function AppHome() {
         axios.get(`${baseURL}user/${telefone}/${password}`)
             .then(async (response) => {
                 setGet(response.data);
+                await AsyncStorage.setItem('foneUsuario', JSON.stringify(response.data.telefone)).then(res => { console.log(response.data.telefone) })
                 await AsyncStorage.setItem('idUsuario', JSON.stringify(response.data.id)).then(res => { console.log(response.data.id) })
                 if (response.status == 200) {
                     getHash(response.data.id)
