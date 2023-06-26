@@ -67,8 +67,6 @@ export default function AppHome() {
                 .then((response) => {
                     actualHash = JSON.stringify(response.data)
                     if (hashUsuario === actualHash) {
-                        console.log(hashUsuario)
-                        console.log(idUsuario)
                         retornarList();
                     }
                 }).catch(errorCompare => {

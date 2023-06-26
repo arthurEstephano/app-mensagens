@@ -20,11 +20,6 @@ export default function AppForm() {
         navigation.navigate('AppHome');
     }
 
-    const retornarList = () => {
-        navigation.navigate('AppList');
-    }
-
-
     const imageChange = async () => {
         // Pede permissão pro usuário para acessar as fotos
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -96,7 +91,7 @@ export default function AppForm() {
             .then((response) => {
                 setPost(response.data);
                 if (response.status == 200) {
-                    retornarList();
+                    retornarHome();
                 }
             }).catch(error => {
                 setError(error);

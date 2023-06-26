@@ -3,6 +3,7 @@ import AppForm from './src/AppForm';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AppHome from './src/AppHome';
+import AppChat from './src/AppChat';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,11 @@ export default function App() {
         name="AppForm"
         component={AppForm}
         options={{title: 'Formulário'}}>
+        </Stack.Screen>
+        <Stack.Screen
+        name="AppChat"
+        component={AppChat}
+        options={{title: 'Chat'}}>
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
