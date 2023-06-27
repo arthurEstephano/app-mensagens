@@ -14,6 +14,7 @@ export default function AppChat({ route }) {
     const [items, setItems] = useState([]);
     const baseURL = "http://192.168.0.222:8080/";
     const [id, setId] = useState('');
+    const [idFrom, setIdFrom] = useState('');
     const [msg, setMsg] = useState([]);
     const [post, setPost] = React.useState(null);
     const scrollRef = useRef(null);
@@ -25,7 +26,7 @@ export default function AppChat({ route }) {
 
     function createPost() {
         axios.post(`${baseURL}message/enviarMensagem`, {
-            idFrom: idUsuario,
+            idFrom: idFrom,
             idTo: id,
             mensagem: msg
         })
@@ -52,6 +53,7 @@ export default function AppChat({ route }) {
         try {
             const idUsuario = await AsyncStorage.getItem('idUsuario')
             const idOutro = route.params.id
+            setIdFrom(idUsuario)
             setId(idOutro)
             const mensagens = await axios
                 .get(`${baseURL}message/buscarMensagensComUmUsuario/${idUsuario}` + `/${idOutro}`)
