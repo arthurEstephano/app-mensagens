@@ -17,7 +17,7 @@ export default function AppNew() {
     }
 
     const getItems = async () => {
-        const foneUsuario = await AsyncStorage.getItem('foneUsuario')
+        const foneUsuario = await AsyncStorage.getItem('foneUsuario').then((data) => JSON.parse(data))
         console.log(foneUsuario)
         const user = await axios
           .get(`${baseURL}message/buscarUsuarios/${foneUsuario}`)
